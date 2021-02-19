@@ -4,7 +4,8 @@
 // utilizarea bibliotecii OpenGL). Functiile din biblioteca
 // OpenGL sunt prefixate cu gl, cele din GLU cu glu si
 // cele din GLUT cu glut.
-#include <GL/glut.h>
+//#include <GL/glut.h>
+#include "glut.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -111,28 +112,39 @@ void Display7() {
     glEnd();
 }
 
+// http://www.rotaryspin.com/markb/courses/projects/polygon.html
 void Display8() {
     // trasare poligon convex GL_QUADS : (v0,v1,v2, ..., v_{n-1})
-    glColor3f(0, 0, 1);
+    glColor3f(0, 0, 1); // blue hexagon
     glPolygonMode(GL_FRONT, GL_FILL);
     glBegin(GL_POLYGON);
     // de completat ...
-    glVertex2f(0.4, 0.5);
-    glVertex2f(-0.4, 0.5);
-    glVertex2f(-0.64, 0);
-    glVertex2f(-0.4, -0.5);
-    glVertex2f(0.4, -0.5);
-    glVertex2f(0.64, 0);
+    glVertex2f(0.7, 0);
+    glVertex2f(0.35, 0.61);
+    glVertex2f(-0.35, 0.61);
+    glVertex2f(-0.7, 0);
+    glVertex2f(-0.35, -0.61);
+    glVertex2f(0.35, -0.61);
     glEnd();
 
-    //glColor3f(1, 0, 0);
-    //glBegin(GL_POLYGON);
-    //glVertex2f(0.3, 0.4);
-    //glVertex2f(-0.3, 0.4);
-    //glVertex2f(-0.5, 0);
-    //glVertex2f(-0.3, -0.4);
-    //glVertex2f(0.3, -0.4);
-    //glVertex2f(0.5, 0);
+    glColor3f(1, 0, 0); // red hexagon
+    glBegin(GL_POLYGON);
+    glVertex2f(0.5, 0);
+    glVertex2f(0.25, 0.43);
+    glVertex2f(-0.25, 0.43);
+    glVertex2f(-0.5, 0);
+    glVertex2f(-0.25, -0.43);
+    glVertex2f(0.25, -0.43);
+    glEnd();
+
+    glColor3f(1, 1, 1); // white hexagon
+    glBegin(GL_POLYGON);
+    glVertex2f(0.48, 0);
+    glVertex2f(0.24, 0.42);
+    glVertex2f(-0.24, 0.42);
+    glVertex2f(-0.48, 0);
+    glVertex2f(-0.24, -0.42);
+    glVertex2f(0.24, -0.42);
     glEnd();
 }
 
