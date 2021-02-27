@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tema2", "tema2\tema2.vcxproj", "{ABDB49A1-F8B5-4451-AF64-966583D4AD1D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ABDB49A1-F8B5-4451-AF64-966583D4AD1D}.Debug|x64.ActiveCfg = Debug|x64
+		{ABDB49A1-F8B5-4451-AF64-966583D4AD1D}.Debug|x64.Build.0 = Debug|x64
+		{ABDB49A1-F8B5-4451-AF64-966583D4AD1D}.Debug|x86.ActiveCfg = Debug|Win32
+		{ABDB49A1-F8B5-4451-AF64-966583D4AD1D}.Debug|x86.Build.0 = Debug|Win32
+		{ABDB49A1-F8B5-4451-AF64-966583D4AD1D}.Release|x64.ActiveCfg = Release|x64
+		{ABDB49A1-F8B5-4451-AF64-966583D4AD1D}.Release|x64.Build.0 = Release|x64
+		{ABDB49A1-F8B5-4451-AF64-966583D4AD1D}.Release|x86.ActiveCfg = Release|Win32
+		{ABDB49A1-F8B5-4451-AF64-966583D4AD1D}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {90ECF6F2-F736-4078-B375-5135DE07FED5}
+	EndGlobalSection
+EndGlobal
