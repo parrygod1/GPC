@@ -232,6 +232,247 @@ void Display5()
 }
 
 
+double cicloida_x(double t, double a, double b)
+{
+    return a * t - b * sin(t);
+}
+
+double cicloida_y(double t, double a, double b)
+{
+    return a - b * cos(t);
+}
+
+
+void Display6()
+{
+    double a = 0.1;
+    double b = 0.2;
+    double ymax = -9999;
+    double ymin = 9999;
+    double xmax = -9999;
+    double xmin = 9999;
+    double ratia = 0.05;
+
+    for (double t = -10; t <= 10; t += ratia)
+    {
+        double x = cicloida_x(t, a, b);
+        double y = cicloida_y(t, a, b);
+        if (x < xmin) xmin = x;
+        if (x > xmax) xmax = x;
+        if (y < ymin) ymin = y;
+        if (y > ymax) ymax = y;
+    }
+    xmax = (fabs(xmax) > fabs(xmin)) ? fabs(xmax) : fabs(xmin);
+    ymax = (fabs(ymax) > fabs(ymin)) ? fabs(ymax) : fabs(ymin);
+
+    glColor3f(1.0, 0, 0);
+    glBegin(GL_LINE_STRIP);
+
+    for (double t = -10; t <= 10; t += ratia)
+    {
+        double x = cicloida_x(t, a, b);
+        double y = cicloida_y(t, a, b);
+        glVertex2d(x / xmax/ 1.1, y / ymax/2); //divide again to refit
+    }
+    glEnd();
+}
+
+double epicicloidala_x(double t, double r, double R)
+{
+    return (R + r) * cos(r / R * t) - r * cos(t + (r / R * t));
+}
+
+double epicicloidala_y(double t, double r, double R)
+{
+    return (R + r) * sin(r / R * t) - r * sin(t + (r / R * t));
+}
+
+void Display7()
+{
+    double R = 0.1;
+    double r = 0.3;
+    double ymax = -9999;
+    double ymin = 9999;
+    double xmax = -9999;
+    double xmin = 9999;
+    double ratia = 0.05;
+
+    double domaina = 0;
+    double domainb = 4 * atan(1) * 2;
+
+    for (double t = domaina; t <= domainb; t += ratia)
+    {
+        double x = epicicloidala_x(t, r, R);
+        double y = epicicloidala_y(t, r, R);
+        if (x < xmin) xmin = x;
+        if (x > xmax) xmax = x;
+        if (y < ymin) ymin = y;
+        if (y > ymax) ymax = y;
+    }
+    xmax = (fabs(xmax) > fabs(xmin)) ? fabs(xmax) : fabs(xmin);
+    ymax = (fabs(ymax) > fabs(ymin)) ? fabs(ymax) : fabs(ymin);
+
+    glColor3f(1.0, 0, 0);
+    glBegin(GL_LINE_LOOP);
+
+    for (double t = domaina; t <= domainb; t += ratia)
+    {
+        double x = epicicloidala_x(t, r, R);
+        double y = epicicloidala_y(t, r, R);
+        glVertex2d(x / xmax, y / ymax);
+    }
+    glEnd();
+}
+
+double hipocicloidala_x(double t, double r, double R)
+{
+    return (R - r) * cos(r / R * t) - r * cos(t - (r / R * t));
+}
+
+double hipocicloidala_y(double t, double r, double R)
+{
+    return (R - r) * sin(r / R * t) - r * sin(t - (r / R * t));
+}
+
+void Display8()
+{
+    double R = 0.1;
+    double r = 0.3;
+    double ymax = -9999;
+    double ymin = 9999;
+    double xmax = -9999;
+    double xmin = 9999;
+    double ratia = 0.05;
+
+    double domaina = 0;
+    double domainb = 4 * atan(1) * 2;
+
+    for (double t = domaina; t <= domainb; t += ratia)
+    {
+        double x = hipocicloidala_x(t, r, R);
+        double y = hipocicloidala_y(t, r, R);
+        if (x < xmin) xmin = x;
+        if (x > xmax) xmax = x;
+        if (y < ymin) ymin = y;
+        if (y > ymax) ymax = y;
+    }
+    xmax = (fabs(xmax) > fabs(xmin)) ? fabs(xmax) : fabs(xmin);
+    ymax = (fabs(ymax) > fabs(ymin)) ? fabs(ymax) : fabs(ymin);
+
+    glColor3f(1.0, 0, 0);
+    glBegin(GL_LINE_LOOP);
+
+    for (double t = domaina; t <= domainb; t += ratia)
+    {
+        double x = hipocicloidala_x(t, r, R);
+        double y = hipocicloidala_y(t, r, R);
+        glVertex2d(x / xmax, y / ymax);
+    }
+    glEnd();
+}
+
+double lamniscata_x(double t, double a)
+{
+    return a * sqrt(2 * cos(2 * t)) * cos(t);
+}
+
+double lamniscata_y(double t, double a)
+{
+    return a * sqrt(2 * cos(2 * t)) * sin(t);
+}
+
+void Display9()
+{
+    double a = 0.4;
+    double ymax = -9999;
+    double ymin = 9999;
+    double xmax = -9999;
+    double xmin = 9999;
+    double ratia = 0.05;
+
+    double domaina = -4 * atan(1) / 4;
+    double domainb = 4 * atan(1)/4;
+
+    for (double t = domaina; t <= domainb; t += ratia)
+    {
+        double x = lamniscata_x(t, a);
+        double y = lamniscata_y(t, a);
+        if (x < xmin) xmin = x;
+        if (x > xmax) xmax = x;
+        if (y < ymin) ymin = y;
+        if (y > ymax) ymax = y;
+    }
+    xmax = (fabs(xmax) > fabs(xmin)) ? fabs(xmax) : fabs(xmin);
+    ymax = (fabs(ymax) > fabs(ymin)) ? fabs(ymax) : fabs(ymin);
+
+    glColor3f(1.0, 0, 0);
+    glBegin(GL_LINE_STRIP);
+
+    for (double t = domaina; t <= domainb; t += ratia)
+    {
+        double x = -lamniscata_x(t, a);
+        double y = -lamniscata_y(t, a);
+        glVertex2d(x / xmax / 1.3, y / ymax / 3);
+    }
+    glEnd();
+
+    glColor3f(1.0, 0, 0);
+    glBegin(GL_LINE_STRIP);
+    for (double t = domaina; t <= domainb; t += ratia)
+    {
+        double x = lamniscata_x(t, a);
+        double y = lamniscata_y(t, a);
+        glVertex2d(x / xmax / 1.3, y / ymax / 3);
+    }
+    glEnd();
+}
+
+double spirala_x(double t, double a)
+{
+    return a * exp(1 + t) * cos(t);
+}
+
+double spirala_y(double t, double a)
+{
+    return a * exp(1 + t) * sin(t);
+}
+
+void Display10()
+{
+    double a = 0.02;
+    double ymax = -9999;
+    double ymin = 9999;
+    double xmax = -9999;
+    double xmin = 9999;
+    double ratia = 0.05;
+
+    double domaina = 0;
+    double domainb = 3;
+
+    for (double t = domaina; t <= domainb; t += ratia)
+    {
+        double x = spirala_x(t, a);
+        double y = spirala_y(t, a);
+        if (x < xmin) xmin = x;
+        if (x > xmax) xmax = x;
+        if (y < ymin) ymin = y;
+        if (y > ymax) ymax = y;
+    }
+    xmax = (fabs(xmax) > fabs(xmin)) ? fabs(xmax) : fabs(xmin);
+    ymax = (fabs(ymax) > fabs(ymin)) ? fabs(ymax) : fabs(ymin);
+
+    glColor3f(1.0, 0, 0);
+    glBegin(GL_LINE_STRIP);
+
+    for (double t = domaina; t <= domainb; t += ratia)
+    {
+        double x = spirala_x(t, a);
+        double y = spirala_y(t, a);
+        glVertex2d(x / xmax , y / ymax/3);
+    }
+    glEnd();
+}
+
 void Init(void) {
 
     glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -261,6 +502,21 @@ void Display(void) {
         break;
     case '5':
         Display5();
+        break;
+    case '6':
+        Display6();
+        break;
+    case '7':
+        Display7();
+        break;
+    case '8':
+        Display8();
+        break;
+    case '9':
+        Display9();
+        break;
+    case '0':
+        Display10();
         break;
     default:
         break;
