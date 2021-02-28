@@ -182,14 +182,15 @@ void Display4()
 //222 longchamps
 double longchamps_x(double t, double a)
 {
-    return a / (4 * pow(cos(t), 2.0) - 3);
+    return a / (4 * cos(t)* cos(t) - 3);
 }
 
 double longchamps_y(double t, double a)
 {
-    return a * tan(t) / (4 * pow(cos(t), 2.0) - 3);
+    return a * tan(t) / (4 * cos(t) * cos(t) - 3);
 }
 
+//sa ne fereasca domnu sa nu folosim pow
 void Display5()
 {
     double a = 0.2;
@@ -200,7 +201,8 @@ void Display5()
     double ratia = 0.05;
     double pi = 4 * atan(1);
 
-    for (double t = -pi/2; t < pi/2; t += ratia)
+    //-pi/6 pentru cadranul stanga sus
+    for (double t = -pi/2 + ratia; t < -pi/6; t += ratia)
     {
         if (t != pi / 6 && t != -pi / 6)
         {
@@ -211,15 +213,16 @@ void Display5()
             if (y < ymin) ymin = y;
             if (y > ymax) ymax = y;
         }
+        
     }
 
     xmax = (fabs(xmax) > fabs(xmin)) ? fabs(xmax) : fabs(xmin);
     ymax = (fabs(ymax) > fabs(ymin)) ? fabs(ymax) : fabs(ymin);
 
-    glColor3f(1.0, 0, 0);
-    glBegin(GL_TRIANGLES);
+    glColor3f(0, 0, 1.0);
+    glBegin(GL_LINE_STRIP);
 
-    for (double t = -pi / 2; t < pi / 2; t += ratia)
+    for (double t = -pi / 2 + ratia; t < -pi / 6; t += ratia)
     {
         if (t != pi / 6 && t != -pi / 6)
         {
@@ -229,6 +232,38 @@ void Display5()
         }
     }
     glEnd();
+
+    glColor3f(1.0, 0, 0);
+
+    double step = 0.00002;
+    double start = 0;
+    bool drawingtri = false;
+
+    for (double t = -pi / 2 + ratia; t < -pi / 6; t += ratia)
+    {
+        if (t != pi / 6 && t != -pi / 6)
+        {
+            double x = longchamps_x(t, a);
+            double y = longchamps_y(t, a);
+
+            if (!drawingtri)
+            {
+                glBegin(GL_TRIANGLES);
+                glVertex2d(-1, 1);
+                glVertex2d(x / xmax, y / ymax);
+                start = y / ymax;
+                drawingtri = true;
+            }
+            else if (fabs(y / ymax - start) >= step)
+            {
+                glVertex2d(x / xmax, y / ymax);
+                glEnd();
+                drawingtri = false;
+            }
+        }
+    }
+    glEnd();
+    
 }
 
 
@@ -447,7 +482,7 @@ void Display10()
     double ratia = 0.05;
 
     double domaina = 0;
-    double domainb = 3;
+    double domainb = 4 * atan(1) * 2;
 
     for (double t = domaina; t <= domainb; t += ratia)
     {
@@ -466,8 +501,8 @@ void Display10()
 
     for (double t = domaina; t <= domainb; t += ratia)
     {
-        double x = spirala_x(t, a);
-        double y = spirala_y(t, a);
+        double x = -spirala_x(t, a);
+        double y = -spirala_y(t, a);
         glVertex2d(x / xmax , y / ymax/3);
     }
     glEnd();
