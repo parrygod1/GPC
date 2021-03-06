@@ -190,7 +190,7 @@ double longchamps_y(double t, double a)
     return a * tan(t) / (4 * cos(t) * cos(t) - 3);
 }
 
-//sa ne fereasca domnu sa nu folosim pow
+//sa ne fereasca domnu sa folosim pow
 void Display5()
 {
     double a = 0.2;
@@ -307,7 +307,7 @@ void Display6()
     {
         double x = cicloida_x(t, a, b);
         double y = cicloida_y(t, a, b);
-        glVertex2d(x / xmax/ 1.1, y / ymax/2); //divide again to refit
+        glVertex2d(x / xmax/ 1.1, y / ymax/2); 
     }
     glEnd();
 }
