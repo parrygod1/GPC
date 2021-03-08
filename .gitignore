@@ -1,6 +1,6 @@
 sem
 *.db
-tema5/.vs/tema5/v16/.suo
+*.suo
 *.db-shm
 *.db-wal
 *.opendb
