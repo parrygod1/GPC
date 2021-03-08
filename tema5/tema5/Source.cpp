@@ -423,6 +423,7 @@ public:
 class CArborePerron
 {
 public:
+    CPunct p3;
     void arborePerron(double lungime,
         int nivel,
         double factordiviziune,
@@ -470,14 +471,68 @@ public:
         }
     }
 
+    void arborePerroninvers(double lungime,int nivel,double factordiviziune,CPunct p,CVector v)
+    {
+        assert(factordiviziune != 0);
+        CPunct p1, p2;
+        if (nivel == 0)
+        {
+        }
+        else
+        {
+            v.rotatie(-45);
+            v.deseneaza(p, lungime);
+            p1 = v.getDest(p, lungime);
+            arborePerroninvers(lungime * factordiviziune, nivel - 1, factordiviziune, p1, v);
+
+            v.rotatie(90);
+            v.deseneaza(p, lungime);
+            p1 = v.getDest(p, lungime);
+            p2 = p1;
+
+            v.rotatie(-45);
+            v.deseneaza(p1, lungime);
+            CPunct newp = p1;
+            p1 = v.getDest(p1, lungime);
+
+            v.rotatie(-90);
+            v.deseneaza(p1, lungime/ 2.2);
+            p2 = p1;
+            p1 = v.getDest(p1, lungime/ 2.2);
+            arborePerroninvers(lungime * factordiviziune, nivel - 1, factordiviziune, p1, v);
+
+            p1 = p2;
+            v.rotatie(120);
+            v.deseneaza(p1, lungime);
+            p1 = v.getDest(p1, lungime);
+            arborePerroninvers(lungime * factordiviziune, nivel - 1, factordiviziune, p1, v);
+
+            p1 = newp;
+            v.rotatie(25);
+            v.deseneaza(p1, lungime);
+            p1 = v.getDest(p1, lungime);
+            arborePerroninvers(lungime * factordiviziune, nivel - 1, factordiviziune, p1, v);
+        }
+    }
+
     void afisare(double lungime, int nivel)
     {
         CVector v(0.0, 1.0);
         CPunct p(0.0, -1.0);
 
         v.deseneaza(p, 0.25);
-        p = v.getDest(p, 0.25);
+        p = v.getDest(p, -0.25);
         arborePerron(lungime, nivel, 0.4, p, v);
+    }
+
+    void afisarev2(double lungime, int nivel)
+    {
+        CVector v(0.0, -1.0);
+        CPunct p(0.0, 3.0);
+
+        v.deseneaza(p, 0.25);
+        p = v.getDest(p, 0.25);
+        arborePerroninvers(lungime, nivel, 0.4, p, v);
     }
 };
 
@@ -495,13 +550,11 @@ public:
         {
             v.rotatie(d * 90);
             curbaHilbert(lungime, nivel - 1, p, v, -d);
-
             v.deseneaza(p, lungime);
             p = v.getDest(p, lungime);
 
             v.rotatie(-d * 90);
             curbaHilbert(lungime, nivel - 1, p, v, d);
-
             v.deseneaza(p, lungime);
             p = v.getDest(p, lungime);
 
@@ -510,10 +563,55 @@ public:
             v.rotatie(-d * 90);
             v.deseneaza(p, lungime);
             p = v.getDest(p, lungime);
-
             curbaHilbert(lungime, nivel - 1, p, v, -d);
 
             v.rotatie(d * 90);
+        }
+    }
+
+    void curbaHilbertv2(double lungime, int nivel, CPunct& p, CVector& v, int d)
+    {
+        CPunct p1, p2;
+        if(nivel == 0) {}
+        else
+        {
+            v.rotatie(-45);
+            v.deseneaza(p, lungime);
+            p1 = v.getDest(p, lungime);
+            curbaHilbertv2(lungime , nivel - 1,  p1, v, d);
+
+            v.rotatie(90);
+            v.deseneaza(p, lungime);
+            p1 = v.getDest(p, lungime);
+
+
+            v.rotatie(-45);
+            v.deseneaza(p1, lungime);
+            CPunct p3 = p1;
+            p1 = v.getDest(p1, lungime);
+            //curbaHilbertv2(lungime , nivel - 1, factordiviziune, p1, v);
+
+            v.rotatie(-90);
+            v.deseneaza(p1, lungime / 2);
+            p2 = p1;
+            p1 = v.getDest(p1, lungime / 2);
+            curbaHilbertv2(lungime , nivel - 1, p1, v, d);
+
+            p1 = p2;
+            v.rotatie(120);
+            v.deseneaza(p1, lungime / 2);
+            p1 = v.getDest(p1, lungime / 2);
+            curbaHilbertv2(lungime , nivel - 1, p1, v, d);
+
+
+
+            p1 = p3;
+            v.rotatie(25);
+            v.deseneaza(p1, lungime);
+            p1 = v.getDest(p1, lungime);
+            curbaHilbertv2(lungime , nivel - 1, p1, v, d);
+      
+
         }
     }
 
@@ -523,6 +621,14 @@ public:
         CPunct p(0.0, 0.0);
 
         curbaHilbert(lungime, nivel, p, v, 1);
+    }
+
+    void afisare2(double lungime, int nivel)
+    {
+        CVector v(0.0, 1.0);
+        CPunct p(0.0, 0.0);
+
+        curbaHilbertv2(lungime, nivel, p, v, 1);
     }
 };
 
@@ -673,6 +779,38 @@ void Display4() {
     nivel++;
 }
 
+void Display5() 
+{
+    CCurbaHilbert obj;
+    obj.afisare2(0.05, nivel);
+    char c[3];
+    sprintf(c, "%2d", nivel);
+    glRasterPos2d(-0.98, -0.98);
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c[0]);
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c[1]);
+    nivel++;
+}
+
+void Display6() {
+    CArborePerron cap;
+
+    char c[3];
+    sprintf(c, "%2d", nivel);
+    glRasterPos2d(-0.98, -0.98);
+   
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c[0]);
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c[1]);
+
+    glPushMatrix();
+    glLoadIdentity();
+    glScaled(0.4, 0.4, 1);
+    glTranslated(-0.5, -0.5, 0.0);
+    cap.afisarev2(1, nivel);
+    glPopMatrix();
+    nivel++;
+}
+
+
 // multimea Julia-Fatou pentru z0 = 0 si c = -0.12375+0.056805i
 //void Display1() {
 //  CComplex c(-0.12375, 0.056805);
@@ -714,6 +852,22 @@ void Display(void) {
     case '2':
         glClear(GL_COLOR_BUFFER_BIT);
         Display2();
+        break;
+    case '3':
+        glClear(GL_COLOR_BUFFER_BIT);
+        Display3();
+        break;
+    case '4':
+        glClear(GL_COLOR_BUFFER_BIT);
+        Display4();
+        break;
+    case '5':
+        glClear(GL_COLOR_BUFFER_BIT);
+        Display5();
+        break;
+    case '6':
+        glClear(GL_COLOR_BUFFER_BIT);
+        Display6();
         break;
     default:
         break;

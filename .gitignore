@@ -1,1 +1,16 @@
 sem
+*.db
+tema5/.vs/tema5/v16/.suo
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
+*.exe
+*.ilk
+*.pdb
+*.pdb
+*.obj
+*.tlog
+*.tlog
+*.idb
+*.pdb
