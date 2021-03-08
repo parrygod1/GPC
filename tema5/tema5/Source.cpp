@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include <GL/glut.h>
 
 #include <stdlib.h>
@@ -5,6 +6,8 @@
 #include <math.h>
 #include <assert.h>
 #include <float.h>
+#include <tuple>
+
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -181,6 +184,107 @@ private:
     } m;
 };
 
+
+class CMandlebrot {
+public:
+    CMandlebrot()
+    {
+        // m.c se initializeaza implicit cu 0+0i
+
+        m.nriter = NRITER_JF;
+        m.modmax = MODMAX_JF;
+    }
+
+    CMandlebrot(CComplex& c)
+    {
+        m.c = c;
+        m.nriter = NRITER_JF;
+        m.modmax = MODMAX_JF;
+    }
+
+    ~CMandlebrot() {}
+
+    void setmodmax(double v) { assert(v <= MODMAX_JF); m.modmax = v; }
+    double getmodmax() { return m.modmax; }
+
+    void setnriter(int v) { assert(v <= NRITER_JF); m.nriter = v; }
+    int getnriter() { return m.nriter; }
+
+    // testeaza daca x apartine multimii Julia-Fatou Jc
+    // returneaza 0 daca apartine, -1 daca converge finit, +1 daca converge infinit
+    std::pair<int, int> isIn(CComplex& x)
+    {
+        int rez = 0;
+        int i = 1;
+        // tablou in care vor fi memorate valorile procesului iterativ z_n+1 = z_n * z_n + c
+        CComplex z0, z1;
+
+        z0 = x;
+        for (i = 1; i < m.nriter; i++)
+        {
+            z1 = z0 * z0 + m.c;
+            if (z1.getModul() > 2)
+            {
+                // x nu apartine m.J-F deoarece procesul iterativ converge finit
+                rez = -1;
+                break;
+            }
+            z0 = z1;
+        }
+
+        return std::make_pair(rez, i);
+    }
+
+    // afisarea multimii J-F care intersecteaza multimea argument
+    void display(double xmin, double ymin, double xmax, double ymax)
+    {
+        glPushMatrix();
+        glLoadIdentity();
+
+        glTranslated((xmin + xmax) * 1.0 / (xmin - xmax), (ymin + ymax)  * 1.0 / (ymin - ymax), 0);
+        glScaled(1.0 / 2, 1.0 / 2, 1);
+            // afisarea propriu-zisa
+        glBegin(GL_POINTS);
+        for (double x = xmin; x <= xmax; x += RX_JF)
+            for (double y = ymin; y <= ymax; y += RY_JF)
+            {
+                CComplex z(x, y);
+                auto result = isIn(z);
+                int r = result.first;
+                int iter = result.second;
+                //printf("%i", iter);
+                double color = iter / m.nriter;
+                
+                
+                if (r != 0)
+                {
+                    glColor3f(0.2 * iter, iter * 0.03,  iter * 0.5);
+                }
+                else
+                {
+                    glColor3f(0, 0, 0);
+                }
+
+                glVertex3d(x, y, 0);
+
+
+            }
+        fprintf(stdout, "STOP\n");
+        glEnd();
+
+        glPopMatrix();
+    }
+
+private:
+    struct SDate {
+        CComplex c;
+        // nr. de iteratii
+        int nriter;
+        // modulul maxim
+        double modmax;
+    } m;
+};
+
 class C2coord
 {
 public:
@@ -280,10 +384,23 @@ public:
         normalizare();
     }
 
+    CVector(const CVector &p)
+    {
+        m.x = p.m.x;
+        m.y = p.m.y;
+    }
+
     CVector operator=(CVector p)
     {
         m.x = p.m.x;
         m.y = p.m.y;
+        return *this;
+    }
+
+    CVector operator*(double p)
+    {
+        m.x = m.x * p;
+        m.y = m.y * p;
         return *this;
     }
 
@@ -371,6 +488,53 @@ public:
         }
     }
 
+    void segmentKochtriangle(double lungime, int nivel, CPunct& p, CVector v)
+    {
+        double count = 4.0;
+        CPunct p1;
+        if (nivel == 0)
+        {
+            v.deseneaza(p, lungime);
+        }
+        else
+        {
+            segmentKochtriangle(lungime /count, nivel - 1, p, v);
+
+            p1 = v.getDest(p, lungime /count);
+            v.rotatie(60);
+            segmentKochtriangle(lungime /count, nivel - 1, p1, v * -1);
+
+            p1 = v.getDest(p1, lungime /count);
+            v.rotatie(60);
+            segmentKochtriangle(lungime /count, nivel - 1, p1, v );
+
+            p1 = v.getDest(p1, lungime / count);
+            v.rotatie(-60);
+            segmentKochtriangle(lungime / count, nivel - 1, p1, v * -1);
+
+            p1 = v.getDest(p1, lungime / count);
+            v.rotatie(-60);
+            segmentKochtriangle(lungime / count, nivel - 1, p1, v);
+
+            p1 = v.getDest(p1, lungime / count);
+            v.rotatie(-60);
+            segmentKochtriangle(lungime / count, nivel - 1, p1, v * -1);
+
+            p1 = v.getDest(p1, lungime / count);
+            v.rotatie(-60);
+            segmentKochtriangle(lungime / count, nivel - 1, p1, v);
+
+            p1 = v.getDest(p1, lungime / count);
+            v.rotatie(60);
+            segmentKochtriangle(lungime / count, nivel - 1, p1, v * -1);
+
+            p1 = v.getDest(p1, lungime / count);
+            v.rotatie(60);
+            segmentKochtriangle(lungime / count, nivel - 1, p1, v);
+
+        }
+    }
+
     void afisare(double lungime, int nivel)
     {
         CVector v1(sqrt(3.0) / 2.0, 0.5);
@@ -385,6 +549,20 @@ public:
         segmentKoch(lungime, nivel, p1, v1);
         segmentKoch(lungime, nivel, p2, v2);
         segmentKoch(lungime, nivel, p3, v3);
+    }
+
+    void afisarev2(double lungime, int nivel)
+    {
+        CVector v1(-1.0, -1.0);
+        CPunct p1(0, 2.0);
+
+        CVector v2(0.0, -1.0);
+        CPunct p2(0.5, sqrt(3.0) / 2.0);
+
+        CVector v3(-sqrt(3.0) / 2.0, 0.5);
+        CPunct p3(0.5, -sqrt(3.0) / 2.0);
+
+        segmentKochtriangle(lungime, nivel, p1, v1);
     }
 };
 
@@ -779,6 +957,7 @@ void Display4() {
     nivel++;
 }
 
+//hilbert2
 void Display5() 
 {
     CCurbaHilbert obj;
@@ -791,6 +970,7 @@ void Display5()
     nivel++;
 }
 
+//perron 2
 void Display6() {
     CArborePerron cap;
 
@@ -810,6 +990,19 @@ void Display6() {
     nivel++;
 }
 
+//koch2
+void Display7() {
+    CCurbaKoch cck;
+    cck.afisarev2(2, nivel);
+
+    char c[3];
+    sprintf(c, "%2d", nivel);
+    glRasterPos2d(-0.98, -0.98);
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c[0]);
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c[1]);
+
+    nivel++;
+}
 
 // multimea Julia-Fatou pentru z0 = 0 si c = -0.12375+0.056805i
 //void Display1() {
@@ -831,6 +1024,16 @@ void Display2() {
   cjf.setnriter(30);
   cjf.display(-1, -1, 1, 1);
 }*/
+
+void Display8()
+{
+    CComplex c(-1, -0.0005);
+    CMandlebrot cjf(c);
+
+    glColor3f(1.0, 0.1, 0.1);
+    cjf.setnriter(25);  
+    cjf.display(-2, -2, 2, 2);
+}
 
 void Init(void) {
 
@@ -868,6 +1071,14 @@ void Display(void) {
     case '6':
         glClear(GL_COLOR_BUFFER_BIT);
         Display6();
+        break;
+    case '7':
+        glClear(GL_COLOR_BUFFER_BIT);
+        Display7();
+        break;
+    case '8':
+        glClear(GL_COLOR_BUFFER_BIT);
+        Display8();
         break;
     default:
         break;
