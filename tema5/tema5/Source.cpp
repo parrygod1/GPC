@@ -1,5 +1,5 @@
 #define NOMINMAX
-#include <GL/glut.h>
+#include "glut.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -810,7 +810,87 @@ public:
     }
 };
 
+class CCovor {
+public:
+    void patrat(double lungime, int nivel, CPunct p)
+    {
+        if (nivel == 0)
+        {
 
+        }
+        else
+        {
+            // center square
+            double cx, cy;
+            p.getxy(cx, cy);
+
+            float length = lungime / 3;
+            CVector v = CVector(0, 1);
+            CPunct p1 = CPunct(cx - length / 2, cy - length / 2);
+            v.deseneaza(p1, length);
+            p1 = v.getDest(p1, length);
+
+            for (int i = 0; i < 3; i++)
+            {
+                v.rotatie(-90);
+                v.deseneaza(p1, length);
+                p1 = v.getDest(p1, length);
+            }
+
+            // 8 neighbour squares
+
+            CPunct topLeft = CPunct(cx - length, cy + length);
+            patrat(length, nivel - 1, topLeft);
+
+            CPunct top = CPunct(cx, cy + length);
+            patrat(length, nivel - 1, top);
+
+            CPunct topRight = CPunct(cx + length, cy + length);
+            patrat(length, nivel - 1, topRight);
+
+            CPunct left = CPunct(cx - length, cy);
+            patrat(length, nivel - 1, left);
+
+            CPunct right = CPunct(cx + length, cy);
+            patrat(length, nivel - 1, right);
+
+            CPunct bottomLeft = CPunct(cx - length, cy - length);
+            patrat(length, nivel - 1, bottomLeft);
+
+            CPunct bottom = CPunct(cx, cy - length);
+            patrat(length, nivel - 1, bottom);
+
+            CPunct bottomRight = CPunct(cx + length, cy - length);
+            patrat(length, nivel - 1, bottomRight);
+
+        }
+    }
+
+    void afisare(double lungime, int nivel)
+    {
+        CPunct p1(0.0, 0.0);
+        double cx = 0, cy = 0;
+
+        patrat(lungime, nivel, p1);
+        lungime *= 0.99;
+        CVector v = CVector(0, 1);
+        CPunct p = CPunct(cx - lungime / 2, cy - lungime / 2);
+        v.deseneaza(p, lungime);
+        p = v.getDest(p, lungime);
+
+        v.rotatie(-90);
+        v.deseneaza(p, lungime);
+        p = v.getDest(p, lungime);
+
+        v.rotatie(-90);
+        v.deseneaza(p, lungime);
+        p = v.getDest(p, lungime);
+
+        v.rotatie(-90);
+        v.deseneaza(p, lungime);
+        p = v.getDest(p, lungime);
+    }
+};
 
 // afisare curba lui Koch "fulg de zapada"
 void Display1() {
@@ -1035,6 +1115,15 @@ void Display8()
     cjf.display(-2, -2, 2, 2);
 }
 
+// Covorul lui Aladin ala aka Imaginea 1
+void Display9()
+{
+    CCovor covor;
+    covor.afisare(2, nivel);
+      
+    nivel++;
+}
+
 void Init(void) {
 
     glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -1048,6 +1137,10 @@ void Init(void) {
 
 void Display(void) {
     switch (prevKey) {
+    case '0':
+        glClear(GL_COLOR_BUFFER_BIT);
+        nivel = 0;
+        break;
     case '1':
         glClear(GL_COLOR_BUFFER_BIT);
         Display1();
@@ -1079,6 +1172,10 @@ void Display(void) {
     case '8':
         glClear(GL_COLOR_BUFFER_BIT);
         Display8();
+        break;
+    case '9':
+        glClear(GL_COLOR_BUFFER_BIT);
+        Display9();
         break;
     default:
         break;
