@@ -488,9 +488,8 @@ public:
         }
     }
 
-    void segmentKochtriangle(double lungime, int nivel, CPunct& p, CVector v)
+    void draw(double lungime, int nivel, CPunct& p, CVector v, int unghi)
     {
-        double count = 4.0;
         CPunct p1;
         if (nivel == 0)
         {
@@ -498,41 +497,51 @@ public:
         }
         else
         {
-            segmentKochtriangle(lungime /count, nivel - 1, p, v);
+            draw(lungime / 2, nivel - 1, p, v, -unghi);
 
-            p1 = v.getDest(p, lungime /count);
-            v.rotatie(60);
-            segmentKochtriangle(lungime /count, nivel - 1, p1, v * -1);
+            p = v.getDest(p, lungime / 2);
+            v.rotatie(unghi);
 
-            p1 = v.getDest(p1, lungime /count);
-            v.rotatie(60);
-            segmentKochtriangle(lungime /count, nivel - 1, p1, v );
+            draw(lungime / 2, nivel - 1, p, v, unghi);
 
-            p1 = v.getDest(p1, lungime / count);
-            v.rotatie(-60);
-            segmentKochtriangle(lungime / count, nivel - 1, p1, v * -1);
+            p = v.getDest(p, lungime / 2);
+            v.rotatie(unghi);
 
-            p1 = v.getDest(p1, lungime / count);
-            v.rotatie(-60);
-            segmentKochtriangle(lungime / count, nivel - 1, p1, v);
-
-            p1 = v.getDest(p1, lungime / count);
-            v.rotatie(-60);
-            segmentKochtriangle(lungime / count, nivel - 1, p1, v * -1);
-
-            p1 = v.getDest(p1, lungime / count);
-            v.rotatie(-60);
-            segmentKochtriangle(lungime / count, nivel - 1, p1, v);
-
-            p1 = v.getDest(p1, lungime / count);
-            v.rotatie(60);
-            segmentKochtriangle(lungime / count, nivel - 1, p1, v * -1);
-
-            p1 = v.getDest(p1, lungime / count);
-            v.rotatie(60);
-            segmentKochtriangle(lungime / count, nivel - 1, p1, v);
-
+            draw(lungime / 2,  nivel - 1, p, v, -unghi);
+            
         }
+    }
+
+
+    void serpinski(double lungime, int nivel, CPunct& p, CVector v)
+    {
+        if ((nivel & 1) == 0)
+        {
+            draw(lungime, nivel , p, v, 60);
+        }
+        else
+        {
+            v.rotatie(60);  
+            draw(lungime, nivel, p, v, -60);
+            v.rotatie(60);
+        }
+    }
+
+    void serpinski_hexagon(double lungime, int nivel, CPunct& p, CVector v)
+    {
+        if(nivel==0)
+        { }
+        else
+        {
+            serpinski_hexagon(lungime, nivel - 1, p, v);
+            p = v.getDest(p, lungime);
+            v.rotatie(60);
+
+            serpinski_hexagon(lungime, nivel - 1, p, v);
+            p = v.getDest(p, lungime);
+            v.rotatie(60);
+        }
+
     }
 
     void afisare(double lungime, int nivel)
@@ -553,16 +562,10 @@ public:
 
     void afisarev2(double lungime, int nivel)
     {
-        CVector v1(-1.0, -1.0);
-        CPunct p1(0, 2.0);
+        CVector v(0.0, 1.0);
+        CPunct p(0.0, 0.0);
 
-        CVector v2(0.0, -1.0);
-        CPunct p2(0.5, sqrt(3.0) / 2.0);
-
-        CVector v3(-sqrt(3.0) / 2.0, 0.5);
-        CPunct p3(0.5, -sqrt(3.0) / 2.0);
-
-        segmentKochtriangle(lungime, nivel, p1, v1);
+        serpinski(lungime, nivel, p, v);
     }
 };
 
@@ -714,8 +717,6 @@ public:
     }
 };
 
-
-
 class CCurbaHilbert
 {
 public:
@@ -747,49 +748,24 @@ public:
         }
     }
 
+    //serpinski triangle
     void curbaHilbertv2(double lungime, int nivel, CPunct& p, CVector& v, int d)
     {
         CPunct p1, p2;
-        if(nivel == 0) {}
+        if(nivel == 0) 
+        {
+            v.deseneaza(p, lungime);
+            p = v.getDest(p, lungime);
+            return;
+        }
         else
         {
-            v.rotatie(-45);
-            v.deseneaza(p, lungime);
-            p1 = v.getDest(p, lungime);
-            curbaHilbertv2(lungime , nivel - 1,  p1, v, d);
-
-            v.rotatie(90);
-            v.deseneaza(p, lungime);
-            p1 = v.getDest(p, lungime);
-
-
-            v.rotatie(-45);
-            v.deseneaza(p1, lungime);
-            CPunct p3 = p1;
-            p1 = v.getDest(p1, lungime);
-            //curbaHilbertv2(lungime , nivel - 1, factordiviziune, p1, v);
-
-            v.rotatie(-90);
-            v.deseneaza(p1, lungime / 2);
-            p2 = p1;
-            p1 = v.getDest(p1, lungime / 2);
-            curbaHilbertv2(lungime , nivel - 1, p1, v, d);
-
-            p1 = p2;
-            v.rotatie(120);
-            v.deseneaza(p1, lungime / 2);
-            p1 = v.getDest(p1, lungime / 2);
-            curbaHilbertv2(lungime , nivel - 1, p1, v, d);
-
-
-
-            p1 = p3;
-            v.rotatie(25);
-            v.deseneaza(p1, lungime);
-            p1 = v.getDest(p1, lungime);
-            curbaHilbertv2(lungime , nivel - 1, p1, v, d);
-      
-
+            v.rotatie(d * 60);
+            for (int i = 0; i < 3; i++)
+            {
+                curbaHilbertv2(lungime / 2, nivel - 1, p, v, 1);
+            }
+            
         }
     }
 
@@ -805,7 +781,7 @@ public:
     {
         CVector v(0.0, 1.0);
         CPunct p(0.0, 0.0);
-
+        glScaled(1.5, 1.5, 1);
         curbaHilbertv2(lungime, nivel, p, v, 1);
     }
 };
@@ -1040,11 +1016,13 @@ void Display4() {
 //hilbert2
 void Display5() 
 {
+    
     CCurbaHilbert obj;
     obj.afisare2(0.05, nivel);
     char c[3];
     sprintf(c, "%2d", nivel);
     glRasterPos2d(-0.98, -0.98);
+    
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c[0]);
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c[1]);
     nivel++;
@@ -1073,7 +1051,7 @@ void Display6() {
 //koch2
 void Display7() {
     CCurbaKoch cck;
-    cck.afisarev2(2, nivel);
+    cck.afisarev2(1, nivel);
 
     char c[3];
     sprintf(c, "%2d", nivel);
@@ -1122,6 +1100,13 @@ void Display9()
     covor.afisare(2, nivel);
       
     nivel++;
+}
+
+
+
+void Display10()
+{
+
 }
 
 void Init(void) {

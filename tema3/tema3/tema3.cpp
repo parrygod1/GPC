@@ -234,19 +234,8 @@ public:
     }
 
     std::pair<double, double> GetViewportFromInteger(int x, int y) {
-        double viewport_x = GetViewportCoordOnGrid(
-            this->lines,
-            this->offset_x,
-            this->size,
-            x
-        );
-
-        double viewport_y = GetViewportCoordOnGrid(
-            this->lines,
-            this->offset_y,
-            this->size,
-            y
-        );
+        double viewport_x = GetViewportCoordOnGrid(this->lines, this->offset_x, this->size, x);
+        double viewport_y = GetViewportCoordOnGrid(this->lines, this->offset_y, this->size, y);
 
         return std::make_pair(viewport_x, viewport_y);
     }
@@ -261,8 +250,11 @@ void drawCircle()
 
 
 void Display1() {
+    glScaled(1.5, 1.5, 1);
     grila.DrawSelf();
-    grila.writePixel(3, 3, 0.02);
+    for(int i = 0; i <= grila.lines; i++)
+        for(int j = 0; j <= grila.columns; j++)
+            grila.writePixel(i, j, 0.02);  
 }
 
 void Display2() {
