@@ -185,9 +185,9 @@ private:
 };
 
 
-class CMandlebrot {
+class CMandelbrot{
 public:
-    CMandlebrot()
+    CMandelbrot()
     {
         // m.c se initializeaza implicit cu 0+0i
 
@@ -195,14 +195,14 @@ public:
         m.modmax = MODMAX_JF;
     }
 
-    CMandlebrot(CComplex& c)
+    CMandelbrot(CComplex& c)
     {
         m.c = c;
         m.nriter = NRITER_JF;
         m.modmax = MODMAX_JF;
     }
 
-    ~CMandlebrot() {}
+    ~CMandelbrot() {}
 
     void setmodmax(double v) { assert(v <= MODMAX_JF); m.modmax = v; }
     double getmodmax() { return m.modmax; }
@@ -219,11 +219,11 @@ public:
         // tablou in care vor fi memorate valorile procesului iterativ z_n+1 = z_n * z_n + c
         CComplex z0, z1;
 
-        z0 = x;
+        z0 = { 0, 0 };
         for (i = 1; i < m.nriter; i++)
         {
-            z1 = z0 * z0 + m.c;
-            if (z1.getModul() > 2)
+            z1 = z0 * z0 + x;
+            if (z1.getModul() > m.modmax)
             {
                 // x nu apartine m.J-F deoarece procesul iterativ converge finit
                 rez = -1;
@@ -241,8 +241,8 @@ public:
         glPushMatrix();
         glLoadIdentity();
 
-        glTranslated((xmin + xmax) * 1.0 / (xmin - xmax), (ymin + ymax)  * 1.0 / (ymin - ymax), 0);
-        glScaled(1.0 / 2, 1.0 / 2, 1);
+        //glTranslated((xmin + xmax) * 1.0 / (xmin - xmax), (ymin + ymax)  * 1.0 / (ymin - ymax), 0);
+        //glScaled(1.0 / 2, 1.0 / 2, 1);
             // afisarea propriu-zisa
         glBegin(GL_POINTS);
         for (double x = xmin; x <= xmax; x += RX_JF)
@@ -252,20 +252,23 @@ public:
                 auto result = isIn(z);
                 int r = result.first;
                 int iter = result.second;
-                //printf("%i", iter);
+                //printf("%i, %i\n", iter, r);
                 double color = iter / m.nriter;
                 
                 
                 if (r != 0)
                 {
-                    glColor3f(0.2 * iter, iter * 0.03,  iter * 0.5);
+                    if (iter > 12)
+                        glColor3f(iter * 0.078, iter * 0.05, 0);
+                    else
+                        glColor3f(0, iter * 0.078,  iter * 0.05);
                 }
                 else
                 {
                     glColor3f(0, 0, 0);
                 }
 
-                glVertex3d(x, y, 0);
+                glVertex3d(x/1.5, y/1.5, 0);
 
 
             }
@@ -1085,8 +1088,8 @@ void Display2() {
 
 void Display8()
 {
-    CComplex c(-1, -0.0005);
-    CMandlebrot cjf(c);
+    CComplex c(0, 0);
+    CMandelbrot cjf(c);
 
     glColor3f(1.0, 0.1, 0.1);
     cjf.setnriter(25);  

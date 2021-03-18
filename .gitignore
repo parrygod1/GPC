@@ -14,3 +14,15 @@ sem
 *.tlog
 *.idb
 *.pdb
+tema5/.vs/tema5/v16/.suo
+tema5/.vs/tema5/v16/Browse.VC.db
+tema5/.vs/tema5/v16/ipch/AutoPCH/380f26c27d9e9cd7/SOURCE.ipch
+tema5/Debug/tema5.exe
+tema5/Debug/tema5.ilk
+tema5/Debug/tema5.pdb
+tema5/tema5/Debug/Source.obj
+tema5/tema5/Debug/tema5.log
+tema5/tema5/Debug/tema5.tlog/CL.command.1.tlog
+tema5/tema5/Debug/vc142.idb
+tema5/tema5/Debug/vc142.pdb
+*.vcxproj
