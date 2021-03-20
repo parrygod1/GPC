@@ -1,5 +1,0 @@
-﻿  tema2.cpp
-D:\Scoala\GPC\tema2\tema2\tema2.cpp(50,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-D:\Scoala\GPC\tema2\tema2\tema2.cpp(85,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-D:\Scoala\GPC\tema2\tema2\tema2.cpp(125,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-  tema2.vcxproj -> D:\Scoala\GPC\tema2\Debug\tema2.exe
