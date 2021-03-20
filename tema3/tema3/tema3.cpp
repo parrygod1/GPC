@@ -27,11 +27,12 @@ public:
         m.y = y;
     }
 
-    C2coord(C2coord& p)
+    C2coord(const C2coord& p)
     {
         m.x = p.m.x;
         m.y = p.m.y;
     }
+
 
     C2coord& operator=(C2coord& p)
     {
@@ -43,6 +44,15 @@ public:
     int operator==(C2coord& p)
     {
         return ((m.x == p.m.x) && (m.y == p.m.y));
+    }
+
+    double GetX() 
+    {
+        return m.x;
+    }
+    double GetY() 
+    {
+        return m.y;
     }
 
 protected:
@@ -185,18 +195,25 @@ public:
         this->lines = lines;
         this->columns = columns;
     }
-
-    double static GetViewportCoordOnGrid(int lin_col_size, double offset, double grid_size, int lin_col) 
+       
+    //lin_col means lin or col
+    double LinColToPixel(int lin_col_size, double offset, double grid_size, int lin_col_value) 
     {
-        double quotent = (double)lin_col / lin_col_size;
-        return offset + quotent * grid_size;
+        return offset + (double)lin_col_value / lin_col_size * grid_size;
     }
+
+    C2coord GrilaCoordToPixel(int l, int c) {
+        double pixel_x = LinColToPixel(this->lines, this->offset_x, this->size, l);
+        double pixel_y = LinColToPixel(this->lines, this->offset_y, this->size, c);
+        return C2coord(pixel_x, pixel_y);
+    }
+
     void DrawSelf() {
         glColor3d(0, 0, 0);
 
         // Draw lines
         for (int l = 0; l <= this->lines; l++) {
-            double viewport_x = GetViewportCoordOnGrid(this->lines, this->offset_x, this->size, l);
+            double viewport_x = LinColToPixel(this->lines, this->offset_x, this->size, l);
 
             glBegin(GL_LINES);
             glVertex2d(viewport_x, this->offset_x);
@@ -206,7 +223,7 @@ public:
 
         // Draw columns
         for (int c = 0; c <= this->columns; c++) {
-            double viewport_y = GetViewportCoordOnGrid(this->columns, this->offset_y, this->size, c);
+            double viewport_y = LinColToPixel(this->columns, this->offset_y, this->size, c);
                 
             glBegin(GL_LINES);
             glVertex2d(this->offset_y, viewport_y);
@@ -215,33 +232,108 @@ public:
         }
     }
 
-    void writePixel(int l, int c, double radius = 0.045)
+    void writePixel(int l, int c)
     {
-        double viewport_x, viewport_y;
-        std::tie(viewport_x, viewport_y) = this->GetViewportFromInteger(l, c);
+        C2coord p = this->GrilaCoordToPixel(l, c);
         int triangleAmount = 50;
 
         glLineWidth(2.0);
         glColor3f(0.5, 0.5, 0.5);
         glBegin(GL_LINES);
-        for (int i = 0; i <= triangleAmount; i++)
+        for (int i = 1; i <= triangleAmount; i++)
         {
-            glVertex2d(viewport_x, viewport_y);
-            glVertex2d(viewport_x + (radius * cos(i * 2 * PI / triangleAmount)),
-                viewport_y + (radius * sin(i * 2 * PI / triangleAmount)));
+            glVertex2d(p.GetX(), p.GetY());
+            glVertex2d(p.GetX() + (0.02 * cos(i * 2 * PI / triangleAmount)),
+                p.GetY() + (0.02 * sin(i * 2 * PI / triangleAmount))
+            );
         }
         glEnd();
     }
 
-    std::pair<double, double> GetViewportFromInteger(int x, int y) {
-        double viewport_x = GetViewportCoordOnGrid(this->lines, this->offset_x, this->size, x);
-        double viewport_y = GetViewportCoordOnGrid(this->lines, this->offset_y, this->size, y);
+    //bresenham midpoint
+    //https://www.geeksforgeeks.org/mid-point-line-generation-algorithm/
+    //https://gist.github.com/liuerfire/4369039
+    void afisaresegmentdreapta3(int x0, int y0, int xmax, int ymax)
+    {
+        C2coord p1 = this->GrilaCoordToPixel(x0, y0);
+        C2coord p2 = this->GrilaCoordToPixel(xmax, ymax);
+        glColor3f(1, 0, 0);
+        glLineWidth(3);
+        glBegin(GL_LINES);
+        glVertex2d(p1.GetX(), p1.GetY());
+        glVertex2d(p2.GetX(), p2.GetY());
+        glEnd();
 
-        return std::make_pair(viewport_x, viewport_y);
+        int dy = ymax - y0;
+        int dx = xmax - x0;
+
+        int x = x0;
+        int y = y0;
+
+        int slope_y = 1;
+        int slope_x = 1;
+        if (dy < 0)
+        {
+            slope_y = -1;
+            dy = -dy;
+        }
+        if (dx < 0)
+        {
+            slope_x = -1;
+            dx = -dx;
+        }
+
+
+        writePixel(x, y);
+
+        if (dy <= dx)
+        {
+            int d = 2 * dy - dx;
+            int dE = 2 * dy;
+            int dNE = 2 * (dy - dx);
+
+            while (x * slope_x < xmax)
+            {
+                if (d <= 0)
+                {
+                    d += dE;
+                }
+                else
+                {
+                    d += dNE;
+                    y += slope_y;
+                }
+                x += slope_x;
+                writePixel(x, y);
+            }
+        }
+        else if (dx < dy)
+        {
+            int d = 2 * dx - dy;
+            int dE = 2 * dx;
+            int dNE = 2 * (dx - dy);
+
+            while (y  < ymax)
+            {
+                if (d <= 0)
+                {
+                    d += dE;
+                }
+                else
+                {
+                    d += dNE;
+                    x += slope_x;
+                }
+                y+= slope_y;
+                writePixel(x, y);
+            }
+        }
+        
     }
+    
 };
 
-GrilaCarteziana grila(5, 5);
+GrilaCarteziana grila(15, 15);
 
 void drawCircle()
 {
@@ -252,9 +344,16 @@ void drawCircle()
 void Display1() {
     glScaled(1.5, 1.5, 1);
     grila.DrawSelf();
-    for(int i = 0; i <= grila.lines; i++)
+    /*for(int i = 0; i <= grila.lines; i++)
         for(int j = 0; j <= grila.columns; j++)
-            grila.writePixel(i, j, 0.02);  
+            grila.writePixel(i, j);  */
+    
+    grila.afisaresegmentdreapta3(0, 0, 15, 7); 
+    grila.afisaresegmentdreapta3(0, 15, 15, 10);
+
+    /*grila.afisaresegmentdreapta3(15, 10, 0, 4);
+    grila.afisaresegmentdreapta3(0, 4, 15, 7);
+    grila.afisaresegmentdreapta3(0, 5, 15, 5);*/
 }
 
 void Display2() {
@@ -266,7 +365,7 @@ void Display3() {
 }
 
 void Display4() {
-    
+        
 }
 
 

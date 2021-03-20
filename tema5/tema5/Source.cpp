@@ -219,7 +219,6 @@ public:
         // tablou in care vor fi memorate valorile procesului iterativ z_n+1 = z_n * z_n + c
         CComplex z0, z1;
 
-        z0 = { 0, 0 };
         for (i = 1; i < m.nriter; i++)
         {
             z1 = z0 * z0 + x;
@@ -241,7 +240,7 @@ public:
         glPushMatrix();
         glLoadIdentity();
 
-        //glTranslated((xmin + xmax) * 1.0 / (xmin - xmax), (ymin + ymax)  * 1.0 / (ymin - ymax), 0);
+        //glTranslated(0.35, 0, 0);
         //glScaled(1.0 / 2, 1.0 / 2, 1);
             // afisarea propriu-zisa
         glBegin(GL_POINTS);
@@ -1051,7 +1050,7 @@ void Display6() {
     nivel++;
 }
 
-//koch2
+
 void Display7() {
     CCurbaKoch cck;
     cck.afisarev2(1, nivel);
