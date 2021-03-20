@@ -238,7 +238,7 @@ public:
         int triangleAmount = 50;
 
         glLineWidth(2.0);
-        glColor3f(0.5, 0.5, 0.5);
+        glColor3f(0, 0, 0);
         glBegin(GL_LINES);
         for (int i = 1; i <= triangleAmount; i++)
         {
@@ -250,10 +250,23 @@ public:
         glEnd();
     }
 
+    void applyThickness(int x, int y, int thickness)
+    {
+        if (y > 0)
+            writePixel(x, y - thickness);
+        if (y < this->lines)
+            writePixel(x, y + thickness);
+
+        if (x > 0)
+            writePixel(x - thickness, y);
+        if (x < this->columns)
+            writePixel(x + thickness, y);
+    }
+
     //bresenham midpoint
     //https://www.geeksforgeeks.org/mid-point-line-generation-algorithm/
     //https://gist.github.com/liuerfire/4369039
-    void afisaresegmentdreapta3(int x0, int y0, int xmax, int ymax)
+    void afisaresegmentdreapta3(int x0, int y0, int xmax, int ymax, int thickness)
     {
         C2coord p1 = this->GrilaCoordToPixel(x0, y0);
         C2coord p2 = this->GrilaCoordToPixel(xmax, ymax);
@@ -283,8 +296,8 @@ public:
             dx = -dx;
         }
 
-
         writePixel(x, y);
+        applyThickness(x, y, thickness);
 
         if (dy <= dx)
         {
@@ -305,6 +318,7 @@ public:
                 }
                 x += slope_x;
                 writePixel(x, y);
+                applyThickness(x,y,thickness);
             }
         }
         else if (dx < dy)
@@ -324,8 +338,9 @@ public:
                     d += dNE;
                     x += slope_x;
                 }
-                y+= slope_y;
+                y += slope_y;
                 writePixel(x, y);
+                applyThickness(x,y,thickness);
             }
         }
         
@@ -348,12 +363,13 @@ void Display1() {
         for(int j = 0; j <= grila.columns; j++)
             grila.writePixel(i, j);  */
     
-    grila.afisaresegmentdreapta3(0, 0, 15, 7); 
-    grila.afisaresegmentdreapta3(0, 15, 15, 10);
+    grila.afisaresegmentdreapta3(0, 0, 15, 7, 0); 
+    grila.afisaresegmentdreapta3(0, 15, 15, 10, 1);
 
-    /*grila.afisaresegmentdreapta3(15, 10, 0, 4);
-    grila.afisaresegmentdreapta3(0, 4, 15, 7);
-    grila.afisaresegmentdreapta3(0, 5, 15, 5);*/
+    //grila.afisaresegmentdreapta3(0, 5, 15, 5, 1);
+    //grila.afisaresegmentdreapta3(15, 10, 0, 4, 0);
+    //grila.afisaresegmentdreapta3(0, 4, 15, 7, 0);
+    
 }
 
 void Display2() {
