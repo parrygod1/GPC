@@ -195,25 +195,18 @@ public:
         this->lines = lines;
         this->columns = columns;
     }
-       
-    //lin_col means lin or col
-    double LinColToPixel(int lin_col_size, double offset, double grid_size, int lin_col_value) 
-    {
-        return offset + (double)lin_col_value / lin_col_size * grid_size;
-    }
 
-    C2coord GrilaCoordToPixel(int l, int c) {
-        double pixel_x = LinColToPixel(this->lines, this->offset_x, this->size, l);
-        double pixel_y = LinColToPixel(this->lines, this->offset_y, this->size, c);
+    C2coord grilaCoordToPixel(int l, int c) {
+        double pixel_x = this->offset_x + (double)l / this->lines * this->size; 
+        double pixel_y = this->offset_y + (double)c / this->columns * this->size;
         return C2coord(pixel_x, pixel_y);
     }
 
-    void DrawSelf() {
+    void drawGrid() {
         glColor3d(0, 0, 0);
 
-        // Draw lines
-        for (int l = 0; l <= this->lines; l++) {
-            double viewport_x = LinColToPixel(this->lines, this->offset_x, this->size, l);
+        for (int c = 0; c <= this->lines; c++) {
+            double viewport_x = this->offset_x + (double)c / this->lines * this->size;
 
             glBegin(GL_LINES);
             glVertex2d(viewport_x, this->offset_x);
@@ -221,9 +214,8 @@ public:
             glEnd();
         }
 
-        // Draw columns
-        for (int c = 0; c <= this->columns; c++) {
-            double viewport_y = LinColToPixel(this->columns, this->offset_y, this->size, c);
+        for (int l = 0; l <= this->columns; l++) {
+            double viewport_y = this->offset_y + (double)l / this->columns * this->size;
                 
             glBegin(GL_LINES);
             glVertex2d(this->offset_y, viewport_y);
@@ -232,10 +224,13 @@ public:
         }
     }
 
+    //https://gist.github.com/linusthe3rd/803118
     void writePixel(int l, int c)
     {
-        C2coord p = this->GrilaCoordToPixel(l, c);
+        C2coord p = this->grilaCoordToPixel(l, c);
         int triangleAmount = 50;
+        double radius = 0.02;
+        GLfloat twicepi = 2 * PI;
 
         glLineWidth(2.0);
         glColor3f(0, 0, 0);
@@ -243,8 +238,8 @@ public:
         for (int i = 1; i <= triangleAmount; i++)
         {
             glVertex2d(p.GetX(), p.GetY());
-            glVertex2d(p.GetX() + (0.02 * cos(i * 2 * PI / triangleAmount)),
-                p.GetY() + (0.02 * sin(i * 2 * PI / triangleAmount))
+            glVertex2d(p.GetX() + (radius * cos(i * twicepi / triangleAmount)),
+                       p.GetY() + (radius * sin(i * twicepi / triangleAmount))
             );
         }
         glEnd();
@@ -268,8 +263,8 @@ public:
     //https://gist.github.com/liuerfire/4369039
     void afisaresegmentdreapta3(int x0, int y0, int xmax, int ymax, int thickness)
     {
-        C2coord p1 = this->GrilaCoordToPixel(x0, y0);
-        C2coord p2 = this->GrilaCoordToPixel(xmax, ymax);
+        C2coord p1 = this->grilaCoordToPixel(x0, y0);
+        C2coord p2 = this->grilaCoordToPixel(xmax, ymax);
         glColor3f(1, 0, 0);
         glLineWidth(3);
         glBegin(GL_LINES);
@@ -358,7 +353,7 @@ void drawCircle()
 
 void Display1() {
     glScaled(1.5, 1.5, 1);
-    grila.DrawSelf();
+    grila.drawGrid();
     /*for(int i = 0; i <= grila.lines; i++)
         for(int j = 0; j <= grila.columns; j++)
             grila.writePixel(i, j);  */
