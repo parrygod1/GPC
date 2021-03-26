@@ -2,5 +2,5 @@
 D:\Scoala\GPC\tema3\tema3\tema3.cpp(10,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
 D:\Scoala\GPC\tema3\tema3\tema3.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
 D:\Scoala\GPC\tema3\tema3\tema3.cpp(159,1): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-D:\Scoala\GPC\tema3\tema3\tema3.cpp(233,1): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+D:\Scoala\GPC\tema3\tema3\tema3.cpp(236,1): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
   tema3.vcxproj -> D:\Scoala\GPC\tema3\Debug\tema3.exe

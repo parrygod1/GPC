@@ -196,17 +196,20 @@ public:
         this->columns = columns;
     }
 
-    C2coord grilaCoordToPixel(int l, int c) {
+    C2coord grilaCoordToPixel(int l, int c) 
+    {
         double pixel_x = this->offset_x + (double)l / this->lines * this->size; 
         double pixel_y = this->offset_y + (double)c / this->columns * this->size;
         return C2coord(pixel_x, pixel_y);
     }
 
-    void drawGrid() {
+    void drawGrid() 
+    {
         glColor3d(0, 0, 0);
 
-        for (int c = 0; c <= this->lines; c++) {
-            double viewport_x = this->offset_x + (double)c / this->lines * this->size;
+        for (int c = 0; c <= this->columns; c++) 
+        {
+            double viewport_x = this->offset_x + (double)c / this->columns * this->size;
 
             glBegin(GL_LINES);
             glVertex2d(viewport_x, this->offset_x);
@@ -214,8 +217,9 @@ public:
             glEnd();
         }
 
-        for (int l = 0; l <= this->columns; l++) {
-            double viewport_y = this->offset_y + (double)l / this->columns * this->size;
+        for (int l = 0; l <= this->lines; l++) 
+        {
+            double viewport_y = this->offset_y + (double)l / this->lines * this->size;
                 
             glBegin(GL_LINES);
             glVertex2d(this->offset_y, viewport_y);
@@ -223,7 +227,6 @@ public:
             glEnd();
         }
     }
-
     //https://gist.github.com/linusthe3rd/803118
     void writePixel(int l, int c)
     {
@@ -358,13 +361,13 @@ void Display1() {
         for(int j = 0; j <= grila.columns; j++)
             grila.writePixel(i, j);  */
     
-    grila.afisaresegmentdreapta3(0, 0, 15, 7, 0); 
-    grila.afisaresegmentdreapta3(0, 15, 15, 10, 1);
+    //grila.afisaresegmentdreapta3(0, 0, 15, 7, 0); 
+    //grila.afisaresegmentdreapta3(0, 15, 15, 10, 1);
 
-    //grila.afisaresegmentdreapta3(0, 5, 15, 5, 1);
-    //grila.afisaresegmentdreapta3(15, 10, 0, 4, 0);
-    //grila.afisaresegmentdreapta3(0, 4, 15, 7, 0);
-    
+    grila.afisaresegmentdreapta3(0, 5, 15, 5, 0);
+    grila.afisaresegmentdreapta3(15, 10, 0, 4, 0);
+    grila.afisaresegmentdreapta3(0, 4, 15, 7, 0);
+    grila.afisaresegmentdreapta3(7, 0, 7, 15, 0);
 }
 
 void Display2() {
