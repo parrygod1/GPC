@@ -16,3 +16,8 @@ sem
 *.pdb
 *.pdb
 *.idb
+*.enc
+*.recipe
+*.log
+*.user
+*.filters
