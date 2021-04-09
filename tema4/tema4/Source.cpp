@@ -7,6 +7,7 @@
 #include <float.h>
 #include <tuple>
 #include <vector>
+#include <fstream>
 
 #define _CRT_SECURE_NO_WARNINGS
 #define PI 3.14159265358979323846
@@ -193,6 +194,8 @@ public:
     double size = 1;
     double offset_x = -0.5;
     double offset_y = -0.5;
+    int numVertex = 0;
+    std::vector<std::pair<int, int>> vertices;
 
     GrilaCarteziana(int lines, int columns)
     {
@@ -205,6 +208,23 @@ public:
         double pixel_x = this->offset_x + (double)l / this->lines * this->size;
         double pixel_y = this->offset_y + (double)c / this->columns * this->size;
         return C2coord(pixel_x, pixel_y);
+    }
+
+    void readvertices()
+    {
+        std::ifstream fin("vertex.txt");
+        fin >> numVertex;
+        int x = 0;
+        int y = 0;
+
+        while (fin >> x >> y && numVertex > 0)
+        {
+            vertices.push_back({ x, y });
+            numVertex--;
+            printf("%d, %d", x, y);
+        }
+
+        fin.close();
     }
 
     void drawGrid()
@@ -426,7 +446,7 @@ public:
                 x++;y--;
                 ssm.push_back({ y + y0, xi + x0, x + x0 });
             }
-
+            
         }
         // regiunea 2
         while (y > 0)
@@ -447,16 +467,14 @@ public:
             }
             ssm.push_back({ y + y0, xi + x0, x + x0 });
         }
-        //ssm.desenare(val, *this, sablon);
-
         for (auto it : ssm)
         {
-            writePixel(std::get<0>(it), std::get<1>(it));
+            writePixel(std::get<0>(it), std::get<2>(it));
         }
     }
-};
 
-GrilaCarteziana grila(15, 15);
+    
+};
 
 void drawCircle()
 {
@@ -464,6 +482,7 @@ void drawCircle()
 }
 
 void Display1() {
+    GrilaCarteziana grila(15, 15);
     grila.drawGrid();
     /*for(int i = 0; i <= grila.lines; i++)
         for(int j = 0; j <= grila.columns; j++)
@@ -480,19 +499,23 @@ void Display1() {
 
 void Display2() 
 {
+    GrilaCarteziana grila(15, 15);
     grila.drawGrid();
     grila.afisarecerc4(0, 3, 11);
 }
 
 void Display3() 
 {
-    
+    GrilaCarteziana grila(25, 25);
     grila.drawGrid();
-    grila.umplereelipsa(1, 1, 10, 10, 5);
+    grila.umplereelipsa(1, 1, 13, 7, 0);
 }
 
-void Display4() {
-
+void Display4() 
+{
+    GrilaCarteziana grila(8, 8);
+    grila.drawGrid();
+    grila.readvertices();
 }
 
 
@@ -521,6 +544,10 @@ void Display(void) {
     case '3':
         glClear(GL_COLOR_BUFFER_BIT);
         Display3();
+        break;
+    case '4':
+        glClear(GL_COLOR_BUFFER_BIT);
+        Display4();
         break;
     default:
         break;
